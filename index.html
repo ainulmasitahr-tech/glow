@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Glow — Health & Beauty App | HCI Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --rose:     #e8a0a8;
+    --rose-lt:  #f5cdd2;
+    --peach:    #f9ded8;
+    --cream:    #fdf6f0;
+    --blush:    #fce8e4;
+    --mint:     #d4ede8;
+    --mocha:    #7a5c58;
+    --dark:     #3d2b28;
+    --text:     #5a3f3b;
+    --muted:    #9e7e7a;
+    --white:    #ffffff;
+    --shadow:   0 4px 30px rgba(120,70,60,.08);
+    --shadow-md:0 8px 40px rgba(120,70,60,.13);
+    --r:        18px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(253,246,240,.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(232,160,168,.2);
+    transition: box-shadow .3s;
+  }
+  nav.scrolled { box-shadow: var(--shadow); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--rose); letter-spacing: .04em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-logo span { color: var(--dark); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: .85rem; font-weight: 500; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--mocha);
+    text-decoration: none; transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--rose); }
+  .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .nav-toggle span {
+    display: block; width: 22px; height: 2px;
+    background: var(--mocha); margin: 5px 0;
+    transition: all .3s;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--cream) 0%, var(--blush) 60%, var(--peach) 100%);
+  }
+  .hero-bg-circle {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, var(--rose-lt) 0%, transparent 70%);
+    opacity: .5; pointer-events: none;
+  }
+  .hero-bg-circle.c1 { width: 500px; height: 500px; top: -100px; right: -100px; }
+  .hero-bg-circle.c2 { width: 300px; height: 300px; bottom: 0; left: 10%; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--white); border: 1px solid var(--rose-lt);
+    border-radius: 100px; padding: 6px 16px; margin-bottom: 24px;
+    font-size: .75rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--rose);
+    opacity: 0; animation: fadeUp .6s .2s forwards;
+  }
+  .hero-badge::before { content: '✦'; }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 300; line-height: 1.1;
+    color: var(--dark); margin-bottom: 20px;
+    opacity: 0; animation: fadeUp .6s .35s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--rose); }
+  .hero-desc {
+    font-size: 1rem; line-height: 1.75; color: var(--muted);
+    max-width: 480px; margin-bottom: 32px;
+    opacity: 0; animation: fadeUp .6s .5s forwards;
+  }
+  .hero-team {
+    background: var(--white); border-radius: var(--r);
+    padding: 20px 24px; display: inline-block;
+    box-shadow: var(--shadow);
+    opacity: 0; animation: fadeUp .6s .65s forwards;
+  }
+  .hero-team h4 {
+    font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 12px; font-weight: 600;
+  }
+  .team-list { display: flex; flex-direction: column; gap: 8px; }
+  .team-member {
+    display: flex; align-items: center; gap: 10px;
+    font-size: .9rem; color: var(--dark); font-weight: 400;
+  }
+  .team-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose-lt), var(--peach));
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 600; color: var(--mocha);
+    flex-shrink: 0;
+  }
+  .hero-visuals {
+    display: flex; justify-content: center; align-items: center;
+    gap: 16px; position: relative;
+    opacity: 0; animation: fadeUp .6s .4s forwards;
+  }
+  /* UPDATED HERO PHONE SIZES */
+  .phone-mockup {
+    width: 220px; /* Increased from 160px for better visibility */
+    border-radius: 35px; /* Smoother corners for the larger size */
+    box-shadow: 0 20px 60px rgba(100,50,50,.2);
+    overflow: hidden; 
+    flex-shrink: 0;
+    transition: transform .3s ease, opacity 0.3s ease;
+  }
+
+  .phone-mockup:hover { 
+    transform: translateY(-10px); 
+  }
+
+  .phone-mockup img { 
+    width: 100%; 
+    display: block; 
+  }
+
+  /* Center phone is now much larger */
+  .phone-mockup.main { 
+    width: 280px; /* Increased from 180px */
+    z-index: 2; 
+  }
+
+  /* Side phones scaled for perspective */
+  .phone-mockup.side { 
+    opacity: .75; 
+    transform: scale(.92); 
+  }
+
+  .phone-mockup.side:hover { 
+    opacity: 1; 
+    transform: scale(.95) translateY(-8px); 
+  }
+  
+  /* ─── SECTION SHARED ─── */
+  section { padding: 96px 48px; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--rose); margin-bottom: 14px;
+  }
+  .section-label::before { content: ''; display: block; width: 24px; height: 1.5px; background: var(--rose); }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300; color: var(--dark); margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--muted); max-width: 560px;
+    line-height: 1.7; margin-bottom: 56px;
+  }
+  .section-header { text-align: center; }
+  .section-header .section-label { justify-content: center; }
+  .section-header .section-sub { margin-left: auto; margin-right: auto; }
+
+  /* ─── TASKS ─── */
+  #tasks { background: var(--white); }
+  .tasks-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 28px; max-width: 1100px; margin: 0 auto;
+  }
+  .task-card {
+    border-radius: 20px; overflow: hidden;
+    background: var(--cream);
+    border: 1px solid rgba(232,160,168,.2);
+    transition: transform .3s, box-shadow .3s;
+    cursor: default;
+    opacity: 0; transform: translateY(30px);
+    transition: transform .4s ease, box-shadow .3s ease, opacity .4s ease;
+  }
+  .task-card.visible { opacity: 1; transform: translateY(0); }
+  .task-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-md); }
+  .task-card-top {
+    padding: 32px 28px 24px;
+    background: linear-gradient(145deg, var(--blush), var(--peach));
+    position: relative; overflow: hidden;
+  }
+  .task-card-top::after {
+    content: ''; position: absolute; right: -20px; bottom: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,.3);
+  }
+  .task-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--white); display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem; margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .task-num {
+    position: absolute; top: 20px; right: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 300; color: rgba(255,255,255,.5);
+    line-height: 1;
+  }
+  .task-card-top h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem; font-weight: 400; color: var(--dark); margin-bottom: 6px;
+  }
+  .task-tag {
+    display: inline-block; font-size: .7rem; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--rose); background: rgba(255,255,255,.65);
+    border-radius: 100px; padding: 3px 12px;
+  }
+  .task-card-body { padding: 24px 28px; }
+  .task-card-body p { font-size: .9rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+  .task-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .task-steps li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: .85rem; color: var(--text);
+  }
+  .step-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--rose); flex-shrink: 0; margin-top: 6px;
+  }
+  .task-screens {
+    display: flex; gap: 8px; padding: 0 28px 28px; flex-wrap: wrap;
+  }
+  .task-screen-thumb {
+    width: 72px; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 4px 12px rgba(100,50,50,.12);
+    transition: transform .2s;
+  }
+  .task-screen-thumb:hover { transform: scale(1.07); }
+  .task-screen-thumb img { width: 100%; display: block; }
+
+  /* ─── DESIGN PROCESS ─── */
+  #process { background: var(--cream); }
+  .process-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px; max-width: 1100px; margin: 0 auto;
+  }
+  .process-panel {
+    background: var(--white); border-radius: 20px;
+    border: 1px solid rgba(232,160,168,.2);
+    overflow: hidden; box-shadow: var(--shadow);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .process-panel.visible { opacity: 1; transform: translateY(0); }
+  .process-panel-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, var(--blush), var(--mint));
+    border-bottom: 1px solid rgba(255,255,255,.5);
+  }
+  .process-panel-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400; color: var(--dark); margin-bottom: 4px;
+  }
+  .process-panel-header p { font-size: .82rem; color: var(--mocha); }
+  .process-panel-body { padding: 28px; }
+  .upload-zone {
+    border: 2px dashed var(--rose-lt); border-radius: 14px;
+    padding: 40px 20px; text-align: center;
+    background: var(--cream); cursor: pointer;
+    transition: border-color .2s, background .2s;
+    position: relative;
+  }
+  .upload-zone:hover { border-color: var(--rose); background: var(--blush); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-zone .uz-icon { font-size: 2rem; margin-bottom: 10px; }
+  .upload-zone p { font-size: .85rem; color: var(--muted); }
+  .upload-zone strong { color: var(--rose); display: block; font-size: .9rem; margin-bottom: 6px; }
+  .uz-preview { width: 100%; border-radius: 10px; display: none; margin-top: 12px; }
+
+  /* ─── PROTOTYPE ─── */
+  #prototype {
+    background: linear-gradient(160deg, var(--dark) 0%, #5a2f2b 100%);
+    color: var(--cream); text-align: center;
+    position: relative; overflow: hidden;
+  }
+  #prototype::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  #prototype .section-label { color: var(--rose-lt); }
+  #prototype .section-label::before { background: var(--rose-lt); }
+  #prototype .section-title { color: var(--white); }
+  #prototype .section-sub { color: rgba(255,255,255,.6); margin-left: auto; margin-right: auto; }
+  .proto-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--rose), #c97080);
+    color: var(--white); text-decoration: none;
+    padding: 16px 36px; border-radius: 100px;
+    font-size: 1rem; font-weight: 500; letter-spacing: .04em;
+    box-shadow: 0 8px 30px rgba(200,100,110,.4);
+    transition: transform .2s, box-shadow .2s;
+    margin-bottom: 56px;
+  }
+  .proto-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(200,100,110,.5); }
+  .proto-btn span { font-size: 1.1rem; }
+  .proto-screens {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 16px; flex-wrap: wrap; position: relative; z-index: 1;
+  }
+  .proto-phone {
+    border-radius: 24px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    transition: transform .3s ease;
+  }
+  .proto-phone img { width: 100%; display: block; }
+  .proto-phone:nth-child(1) { width: 130px; transform: rotate(-4deg) translateY(20px); }
+  .proto-phone:nth-child(2) { width: 155px; z-index: 2; }
+  .proto-phone:nth-child(3) { width: 130px; transform: rotate(4deg) translateY(20px); }
+  .proto-phone:nth-child(4) { width: 115px; transform: rotate(-3deg) translateY(30px); }
+  .proto-phone:hover { transform: translateY(-10px) rotate(0deg) !important; }
+
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,.5);
+    text-align: center; padding: 32px 48px;
+    font-size: .82rem;
+  }
+  footer strong { color: var(--rose-lt); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 14px 24px; }
+    .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--cream); border-bottom: 1px solid var(--rose-lt);
+      flex-direction: column; gap: 0; padding: 16px 0; }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 12px 24px; }
+    .nav-toggle { display: block; }
+    #hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 40px; }
+    .hero-visuals { order: -1; }
+    .phone-mockup.side { display: none; }
+    section { padding: 72px 24px; }
+    .tasks-grid { grid-template-columns: 1fr; }
+    .process-grid { grid-template-columns: 1fr; }
+    .dl-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .proto-phone:nth-child(4) { display: none; }
+  }
+  @media (max-width: 600px) {
+    .proto-phone:nth-child(1), .proto-phone:nth-child(3) { display: none; }
+    .proto-phone:nth-child(2) { width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">✦ <span>Glow</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero">Overview</a></li>
+    <li><a href="#tasks">Tasks</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#prototype">Prototype</a></li>
+    <li><a href="#full-view">Full View</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">HCI Project — Medium Fidelity Prototype</div>
+    <h1 class="hero-title">
+      Glow<br>
+      <em>Health & Beauty</em><br>
+      Mobile App
+    </h1>
+    <p class="hero-desc">
+      A human-centred mobile application designed to streamline beauty service bookings, product discovery, and personal beauty journaling. Built as a medium-fidelity interactive prototype for our HCI coursework.
+    </p>
+    <div class="hero-team">
+      <h4>✦ Team Members</h4>
+      <div class="team-list">
+        <div class="team-member">
+          <div class="team-avatar">TM</div>
+          AINUL MASITAH BINTI RAMLI
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">TM</div>
+          AINUL MARDHIAH BINTI AZIZAN
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">TM</div>
+          ZAFIRAH HAKIMI BINTI MOHD ZAINI
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">TM</div>
+          NABILAH HUSNA BINTI ROHANY
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visuals">
+    <div class="phone-mockup side">
+      <img src="pro4.png" alt="Booking screen"/>
+    </div>
+    <div class="phone-mockup main">
+      <img src="pro1.png" alt="Home screen"/>
+    </div>
+    <div class="phone-mockup side">
+      <img src="pro3.png" alt="Shop screen"/>
+    </div>
+  </div>
+</section>
+
+<!-- TASKS -->
+<section id="tasks">
+  <div class="section-header">
+    <div class="section-label">Core Interaction Tasks</div>
+    <h2 class="section-title">3 Evaluated User Tasks</h2>
+    <p class="section-sub">Each task was designed around real user needs identified during our research phase, then prototyped and tested for usability.</p>
+  </div>
+  <div class="tasks-grid">
+
+    <!-- Task 1 -->
+    <div class="task-card">
+      <div class="task-card-top">
+        <div class="task-icon">📅</div>
+        <div class="task-num">01</div>
+        <h3>Book an Appointment</h3>
+        <span class="task-tag">Facial · Haircut</span>
+      </div>
+      <div class="task-card-body">
+        <p>Users can browse featured beauty services, select a preferred date and time slot, and confirm a booking — all within a clean, guided flow.</p>
+        <ul class="task-steps">
+          <li><span class="step-dot"></span>Select a service (Facial, Hair Cut & Style, Massage, etc.)</li>
+          <li><span class="step-dot"></span>Choose a preferred date on the calendar</li>
+          <li><span class="step-dot"></span>Pick an available time slot</li>
+          <li><span class="step-dot"></span>Confirm & receive booking summary</li>
+        </ul>
+      </div>
+      <div class="task-screens">
+        <div class="task-screen-thumb"><img src="pro4.png" alt="Service select"/></div>
+        <div class="task-screen-thumb"><img src="pro5.png" alt="Date & time"/></div>
+      </div>
+    </div>
+
+    <!-- Task 2 -->
+    <div class="task-card">
+      <div class="task-card-top">
+        <div class="task-icon">🛍️</div>
+        <div class="task-num">02</div>
+        <h3>Browse & Purchase Products</h3>
+        <span class="task-tag">Skincare · Makeup · Hair</span>
+      </div>
+      <div class="task-card-body">
+        <p>A curated shop experience lets users filter by category, view product ratings, and add items to cart seamlessly.</p>
+        <ul class="task-steps">
+          <li><span class="step-dot"></span>Open the Shop tab and search or filter by category</li>
+          <li><span class="step-dot"></span>Browse product cards (rating, price, images)</li>
+          <li><span class="step-dot"></span>Tap 'Buy Now' to add to cart</li>
+          <li><span class="step-dot"></span>Proceed to checkout & payment</li>
+        </ul>
+      </div>
+      <div class="task-screens">
+        <div class="task-screen-thumb"><img src="pro3.png" alt="Shop screen"/></div>
+      </div>
+    </div>
+
+    <!-- Task 3 -->
+    <div class="task-card">
+      <div class="task-card-top">
+        <div class="task-icon">✨</div>
+        <div class="task-num">03</div>
+        <h3>Profile & Beauty Diary</h3>
+        <span class="task-tag">Tracking · Personalisation</span>
+      </div>
+      <div class="task-card-body">
+        <p>Users can manage their account, view appointment history, and maintain a personal Beauty Diary to track their skincare and wellness journey.</p>
+        <ul class="task-steps">
+          <li><span class="step-dot"></span>Access Account tab to view profile</li>
+          <li><span class="step-dot"></span>Review appointment count & diary entries</li>
+          <li><span class="step-dot"></span>Switch to 'Beauty Diary' tab</li>
+          <li><span class="step-dot"></span>Log new entries, track routines & progress</li>
+        </ul>
+      </div>
+      <div class="task-screens">
+        <div class="task-screen-thumb"><img src="pro6.png" alt="Profile"/></div>
+        <div class="task-screen-thumb"><img src="pro7.png" alt="Beauty Diary"/></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DESIGN PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <div class="section-label">Design Process</div>
+    <h2 class="section-title">UX Sitemap & Storyboards</h2>
+    <p class="section-sub">Our design process followed a user-centred approach — from ideation through wireframing to medium-fidelity prototyping.</p>
+  </div>
+  <div class="process-grid">
+
+    <div class="process-panel">
+      <div class="process-panel-header">
+        <h3>🗺️ UX Sitemap</h3>
+        <p>Information architecture & navigation structure</p>
+      </div>
+      <div class="process-panel-body">
+        <div class="image-placeholder-zone" style="background: var(--cream); border: 2px dashed var(--rose); border-radius: var(--r); padding: 40px; text-align: center;">
+          <img src="gambar ux letak sini" alt="UX Sitemap" style="max-width: 100%; border-radius: 10px; display: block; margin: 0 auto;">
+          <p style="margin-top: 15px; color: var(--mocha); font-style: italic;">[ UX Sitemap Image Placeholder ]</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="process-panel">
+      <div class="process-panel-header">
+        <h3>📖 Storyboards</h3>
+        <p>User journey scenarios & narrative flows</p>
+      </div>
+      <div class="process-panel-body">
+        <div class="image-placeholder-zone" style="background: var(--cream); border: 2px dashed var(--rose); border-radius: var(--r); padding: 40px; text-align: center;">
+          <img src="storyboard gambar letak sini" alt="Storyboards" style="max-width: 100%; border-radius: 10px; display: block; margin: 0 auto;">
+          <p style="margin-top: 15px; color: var(--mocha); font-style: italic;">[ Storyboard Image Placeholder ]</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROTOTYPE -->
+<section id="prototype" style="position: relative; z-index: 10;">
+  <div class="section-label">Interactive Prototype</div>
+  <h2 class="section-title">Experience the App</h2>
+  <p class="section-sub">Explore the full medium-fidelity prototype. Interact with Booking, Shopping, and the Beauty Diary.</p>
+
+  <div style="margin: 30px 0; position: relative; z-index: 999;">
+    <a href="https://www.figma.com/proto/P1yFUenyhFmBFEZZw4fmxw/Health---Beauty-App-UI?node-id=1-2&scaling=scale-down&page-id=0%3A1&starting-point-node-id=1%3A2&hide-ui=1" 
+       target="_blank" 
+       rel="noopener" 
+       style="display: inline-block; padding: 18px 36px; background: #e8a0a8; color: white; text-decoration: none; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer !important;">
+      ✦ Launch Fullscreen Prototype
+    </a>
+  </div>
+
+  <div class="proto-screens">
+    <div class="proto-phone"><img src="pro2.png" alt="Featured services"/></div>
+    <div class="proto-phone"><img src="pro1.png" alt="Home screen"/></div>
+    <div class="proto-phone"><img src="pro3.png" alt="Shop screen"/></div>
+    <div class="proto-phone"><img src="pro6.png" alt="Profile screen"/></div>
+  </div>
+</section>
+
+<!--FULL VIEW-->
+<section id="full-view" style="background-color: var(--blush); padding: 100px 5%; border-top: 1px solid var(--rose-lt);">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-label" style="text-align: center;">Gallery View</div>
+    <h2 class="section-title" style="text-align: center;">Full Interface Showcase</h2>
+    <p class="section-sub" style="text-align: center; max-width: 700px; margin: 0 auto 60px auto;">
+    </p>
+
+    <div class="full-proto-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px;">
+      
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro1.png" alt="Home Screen" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">01. Home Screen</p>
+      </div>
+
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro2.png" alt="Beauty Tips" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">02. Beauty Tips</p>
+      </div>
+
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro3.png" alt="Product Shop" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">03. Product Shop</p>
+      </div>
+
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro4.png" alt="Service Details" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">04. Service Details</p>
+      </div>
+
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro5.png" alt="Select date & Time" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">05. Select date & Time</p>
+      </div>
+
+      <div class="gallery-item" style="text-align: center;">
+        <img src="pro6.png" alt="Beauty Diary" style="width: 100%; border-radius: 30px; box-shadow: var(--shadow-md); border: 6px solid white;">
+        <p style="margin-top: 20px; font-weight: 600; color: var(--mocha); font-family: 'DM Sans', sans-serif;">06. Profile / Beauty Diary</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <p>✦ <strong>Glow — Health & Beauty App</strong> &nbsp;·&nbsp; HCI Project Portfolio &nbsp;·&nbsp; Creative Multimedia</p>
+  <p style="margin-top:8px;">Built with care for our Human-Computer Interaction coursework.</p>
+</footer>
+
+<script>
+  // Nav scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // toggle navigation mobile
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // Intersection Observer utk scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), entry.target.dataset.delay || 0);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.task-card, .process-panel, .dl-card').forEach((el, i) => {
+    el.dataset.delay = (i % 3) * 120;
+    observer.observe(el);
+  });
+
+
+</script>
+</body>
+</html>
